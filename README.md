@@ -88,8 +88,8 @@ erDiagram
 
 ### 1. **Clone Repository**
 ```bash
-git clone https://github.com/username/coffeesense-ai.git
-cd coffeesense-ai
+git clone https://github.com/jojohyperbackend-hub/Coffee-Analyzer.git
+cd Coffee-Analyzer
 ```
 
 ### 2. **Instal Dependensi**
