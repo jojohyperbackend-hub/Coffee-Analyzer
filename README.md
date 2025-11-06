@@ -1,36 +1,176 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# ☕ CoffeeSense AI
 
-## Getting Started
+> Platform cerdas berbasis AI untuk analisis rasa kopi dan rekomendasi penyeduhan — memanfaatkan **Supabase**, **OpenRouter (GPT-4o-mini)**, dan interface modern bergaya ChatGPT.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🚀 Fitur Utama
+
+### 1. **Upload & Analisis Gambar Kopi**
+- Pengguna dapat mengunggah foto biji atau bubuk kopi.
+- Gambar disimpan di **Supabase Storage**.
+- Data jenis kopi dan metode seduh tersimpan otomatis di tabel `coffee_estimations`.
+- AI akan memberikan analisis mendalam (profil rasa, karakter unik, rekomendasi alat & suhu seduh, hingga kesimpulan elegan).
+
+### 2. **Input Manual Tanpa Gambar**
+- Pengguna juga dapat mengisi manual: `jenis kopi` dan `cara seduh`.
+- Tetap mendapatkan rekomendasi analisis lengkap dari model GPT-4o-mini tanpa perlu gambar.
+
+### 3. **UI Gaya ChatGPT 5D Bubble Warp 💬**
+- Tampilan interaktif dengan bubble chat bergaya *5D glass morphism*.
+- Setiap respons AI tampil seperti percakapan profesional antara barista dan pengguna.
+- Mendukung format Markdown (`**bold**`, list, heading, emoji, dsb.).
+
+### 4. **Integrasi OpenRouter GPT-4o-mini**
+- Model AI digunakan untuk analisis rasa & deskripsi rekomendasi kopi.
+- Hasil outputnya diformat menyerupai respon ChatGPT — elegan, natural, dan kontekstual.
+
+### 5. **Database Supabase Realtime**
+- Data disimpan dan dapat dimonitor melalui tabel `coffee_estimations`.
+- Realtime update untuk setiap upload atau input manual.
+
+---
+
+## 🧩 ERD Database
+
+```mermaid
+erDiagram
+    coffee_estimations {
+        int id PK
+        text image_url
+        text jenis_kopi
+        text cara_seduh
+        text hasil_analisis
+        timestamp created_at
+    }
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**Relasi:**
+- Tabel `coffee_estimations` berdiri sendiri.
+- Setiap baris menyimpan satu hasil analisis kopi dari user (upload atau input manual).
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🔄 Flowchart Sistem Analisis Kopi
 
-## Learn More
+```ascii
+                   ┌────────────────────────┐
+                   │   📸 Upload Gambar / ✍️ Input Manual │
+                   └────────────┬───────────┘
+                                │
+                                ▼
+                  ┌────────────────────────┐
+                  │  Validasi Input (File, Jenis, Seduh) │
+                  └────────────┬───────────┘
+                                │
+                                ▼
+             ┌──────────────────────────────┐
+             │ Upload ke Supabase Storage    │
+             │ Simpan ke coffee_estimations  │
+             └────────────┬─────────────────┘
+                                │
+                                ▼
+           ┌────────────────────────────────────┐
+           │ Kirim prompt ke OpenRouter GPT-4o-mini │
+           │ (Analisis rasa, aroma, rekomendasi) │
+           └────────────┬───────────────────────┘
+                                │
+                                ▼
+               ┌──────────────────────────────────┐
+               │ AI Response → Format Markdown    │
+               │ Tampil dalam UI bubble 5D        │
+               └──────────────────────────────────┘
+```
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## ⚙️ Cara Instalasi & Setup
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 1. **Clone Repository**
+```bash
+git clone https://github.com/username/coffeesense-ai.git
+cd coffeesense-ai
+```
 
-## Deploy on Vercel
+### 2. **Instal Dependensi**
+```bash
+npm install
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 3. **Buat File `.env.local`**
+Tambahkan konfigurasi Supabase & OpenRouter kamu:
+```bash
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_key
+OPENROUTER_API_KEY=your_openrouter_key
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+> Pastikan file `.env.local` **terdaftar di `.gitignore`** agar tidak ikut diupload ke GitHub atau Vercel.
+
+### 4. **Jalankan Secara Lokal**
+```bash
+npm run dev
+```
+Lalu buka di browser → [http://localhost:3000](http://localhost:3000)
+
+---
+
+## 📁 Struktur Folder
+```
+📦 coffeesense-ai
+ ┣ 📂 components
+ ┃ ┗ 📜 CameraScan.jsx   # Komponen utama upload & analisis
+ ┣ 📂 lib
+ ┃ ┗ 📜 supabase.js      # Koneksi Supabase client
+ ┣ 📜 .gitignore          # File ignore environment & build
+ ┣ 📜 package.json        # Dependensi proyek
+ ┣ 📜 README.md           # Dokumentasi proyek
+ ┗ 📜 next.config.js      # Konfigurasi Next.js
+```
+
+---
+
+## 🧠 Teknologi yang Digunakan
+- **Next.js 14+** — framework React modern.
+- **Supabase** — database & storage real-time.
+- **OpenRouter (GPT-4o-mini)** — AI analisis rasa kopi.
+- **React Markdown** — render hasil analisis AI dalam format markdown.
+- **TailwindCSS + Framer Motion** — efek animasi & bubble 5D.
+
+---
+
+## 💬 Contoh Output AI
+```
+## ☕ Profil Rasa
+Kopi Arabika Gayo ini memiliki aroma floral dan cokelat gelap.
+
+## ⚙️ Rekomendasi Seduh
+Metode terbaik: V60 Dripper (rasio 1:15, suhu 93°C).
+
+## ✨ Kesimpulan
+Kopi ini seperti jazz di dalam cangkir — lembut, kompleks, dan elegan.
+```
+
+---
+
+## 🔒 Keamanan & Deployment
+- File `.env.local` otomatis diabaikan oleh `.gitignore`.
+- Dapat di-deploy ke **Vercel** atau **Netlify** tanpa memaparkan API keys.
+
+```bash
+git add .
+git commit -m "Initial commit: CoffeeSense AI"
+git push origin main
+```
+Kemudian deploy via Vercel CLI atau dashboard.
+
+---
+
+## 👨‍🔬 Kontributor
+- **Jojo Hyper Backend** — AI & backend architecture.
+- **ChatGPT (OpenRouter)** — AI Assistant & analisis natural-language.
+
+---
+
+## ☕ Lisensi
+MIT License — silakan gunakan, modifikasi, dan kembangkan lebih lanjut untuk project AI kopi kamu sendiri.
